@@ -1,0 +1,72 @@
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsThunk } from "../../thunkActionsCreator/productsThunks";
+import { fetchCategoriesThunk } from "../../thunkActionsCreator/categoriesThunks";
+
+export default function Landing() {
+  const dispatch = useDispatch();
+  const filters = useSelector((state) => state.filters);
+  const { list, loading, error } = useSelector((state) => state.products);
+  const items = list?.data || [];
+  const currentPage = list?.page || 1;
+  const perPage = list?.perPage || 20;
+  const hasMore = items.length > 0 && items.length % perPage === 0;
+  const loadMoreRef = useRef(null);
+  const feedContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (!loadMoreRef.current || !hasMore || loading) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting) {
+          loadMoreProducts();
+        }
+      },
+      { threshold: 0.2 },
+    );
+    observer.observe(loadMoreRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, loading, currentPage, dispatch]);
+
+  useEffect(() => {
+    if (feedContainerRef.current) {
+      feedContainerRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [filters]);
+
+  const loadMoreProducts = () => {
+    if (hasMore && !loading) {
+      dispatch(
+        fetchProductsThunk({
+          ...filters,
+          page: currentPage + 1,
+          per_page: 20,
+        }),
+      );
+    }
+  };
+
+  return (
+    <div>
+      <div className="feed-container">
+        <span ref={feedContainerRef}></span>
+        {items.map((product) => (
+          <div key={product.id}>
+            <p>{product.name}</p>
+            <img src={product.images[0]?.src} alt={product.name} />
+          </div>
+        ))}
+        {hasMore && !loading && (
+          <button onClick={loadMoreProducts}>
+            <span ref={loadMoreRef}>Voir plus (ou déclencher au scroll)</span>
+          </button>
+        )}
+      </div>
+      {loading && <p>Chargement...</p>}
+    </div>
+  );
+}
