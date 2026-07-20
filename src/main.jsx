@@ -10,6 +10,7 @@ import { cartSlice } from "./slices/cartSlice";
 import { productsSlice } from "./slices/productSlice";
 import { categoriesSlice } from "./slices/categoriesSlice";
 import { filtersSlice } from "./slices/filtersSlice";
+import { userSlice } from "./slices/userSlice";
 
 import { initializeCartThunk } from "./thunkActionsCreator/cartThunks";
 
@@ -19,7 +20,7 @@ import Error404 from "./pages/Error404";
 
 const store = configureStore({
   reducer: {
-    //user: userReducer,
+    user: userSlice.reducer,
     cart: cartSlice.reducer,
     categories: categoriesSlice.reducer,
     products: productsSlice.reducer,
@@ -37,6 +38,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         v7_startTransition: true,
         v7_relativeSplatPath: true,
       }}
+      //basename="/ecom"
     >
       <Header />
       <Routes>
