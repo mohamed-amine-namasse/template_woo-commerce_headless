@@ -17,12 +17,11 @@ import { initializeCartThunk } from "./thunkActionsCreator/cartThunks";
 import Store from "./pages/Store";
 import Header from "./components/Header";
 import Error404 from "./pages/Error404";
-import UserTest from "./components/UserTest";
-import MentionsLegales from "./pages/MentionsLegales/MentionsLegales";
-import CGU from "./pages/CGU/CGU";
-import CGV from "./pages/CGV/CGV";
+import MentionsLegales from "./pages/MentionsLegales";
+import CGU from "./pages/CGU";
+import CGV from "./pages/CGV";
 import User from "./pages/User";
-import Cart from "./components/Cart";
+import Cart from "./pages/Cart";
 
 const store = configureStore({
   reducer: {
@@ -49,7 +48,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Header />
       <Routes>
         <Route path="/" element={<Store />} />
-        <Route path="/test-user" element={<UserTest />} />
         <Route path="/mentions-legales" element={<MentionsLegales />} />
         <Route path="/cgu" element={<CGU />} />
         <Route path="/cgv" element={<CGV />} />
