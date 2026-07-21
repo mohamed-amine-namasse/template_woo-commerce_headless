@@ -17,6 +17,7 @@ import { initializeCartThunk } from "./thunkActionsCreator/cartThunks";
 
 import Store from "./pages/Store";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import Error404 from "./pages/Error404";
 import UserTest from "./components/UserTest";
 import MentionsLegales from "./pages/MentionsLegales";
@@ -58,6 +59,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/user" element={<User />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
+      <Footer />
     </Router>
   </Provider>,
   /* </React.StrictMode>, */
