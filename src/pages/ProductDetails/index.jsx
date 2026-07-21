@@ -1,91 +1,102 @@
-// Importation du fichier de style
-import "./ProductDetails.scss";
 import React, { useEffect } from "react";
-// Ajout de useNavigate pour le bouton de retour
 import { useParams, useNavigate } from "react-router-dom"; 
 import { useDispatch, useSelector } from "react-redux";
-// Importation de l'action
+
+// Importation des actions (thunks)
 import { fetchProductByIdThunk } from "../../thunkActionsCreator/productsThunks";
+import { addProductToCart } from "../../thunkActionsCreator/cartThunks";
 
 export default function ProductDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
-  // Initialisation de l'outil de navigation
   const navigate = useNavigate(); 
 
-  const { singleProduct, loadingSingle, errorSingle } = useSelector(
+  const { list, singleProduct, loadingSingle, errorSingle } = useSelector(
     (state) => state.products
   );
 
+  const productFromList = list?.data?.find(p => p.id.toString() === id.toString());
+  const productToDisplay = productFromList || singleProduct;
+
   useEffect(() => {
-    if (id) {
+    if (id && !productFromList) {
       dispatch(fetchProductByIdThunk(id));
     }
-  }, [id, dispatch]);
+  }, [id, dispatch, productFromList]);
 
-  if (loadingSingle) {
+  // Fonction pour ajouter ce produit spécifique au panier
+  const handleAddToCart = () => {
+    if (productToDisplay && productToDisplay.id) {
+      dispatch(
+        addProductToCart({
+          productId: productToDisplay.id,
+          quantity: 1,
+          variation: [],
+        })
+      );
+    }
+  };
+
+  if (loadingSingle && !productToDisplay) {
     return <div className="loading-state">Chargement en cours...</div>;
   }
 
-  if (errorSingle) {
-    return <div className="error-state">Une erreur est survenue: {errorSingle}</div>;
+  if (errorSingle && !productToDisplay) {
+    return <div className="error-state">Erreur : {errorSingle}</div>;
   }
 
-  if (!singleProduct) {
+  if (!productToDisplay) {
     return <div className="not-found-state">Aucun produit trouvé.</div>;
   }
 
   return (
     <div className="product-page-wrapper">
       
-      {/* Bouton de retour */}
       <button className="back-to-store-btn" onClick={() => navigate(-1)}>
         <i className="fas fa-arrow-left"></i> Retour
       </button>
 
       <div className="product-top-block">
-        
         <div className="image-left-side">
-          {singleProduct.images && singleProduct.images[1] && (
+          {productToDisplay.images && productToDisplay.images.length > 0 && (
             <img 
-              src={singleProduct.images[1].src} 
-              alt={singleProduct.images[1].alt || singleProduct.name} 
+              src={productToDisplay.images[1]?.src || productToDisplay.images[0]?.src} 
+              alt={productToDisplay.name} 
             />
           )}
           <span className="wishlist-heart-decorative">♡</span>
         </div>
 
         <div className="main-info-container">
-          <h1>{singleProduct.name}</h1>
+          <h1 dangerouslySetInnerHTML={{ __html: productToDisplay.name }}></h1>
           
           <p className="product-price">
-            {singleProduct.prices?.price 
-              ? `${(parseFloat(singleProduct.prices.price) / 100).toFixed(2)} ${singleProduct.prices.currency_code || 'EUR'}`
+            {productToDisplay.prices?.price 
+              ? `${(parseFloat(productToDisplay.prices.price) / 100).toFixed(2)} ${productToDisplay.prices.currency_code || 'EUR'}`
               : "Prix non disponible"}
           </p>
 
           <div 
             className="short-description-box"
-            dangerouslySetInnerHTML={{ __html: singleProduct.short_description || "<p>Aucune introduction disponible.</p>" }}
+            dangerouslySetInnerHTML={{ __html: productToDisplay.short_description || "<p>Aucune introduction disponible.</p>" }}
           />
 
-          <button className="add-to-cart-btn">
+          {/* Le bouton d'ajout au panier est maintenant connecté via onClick */}
+          <button className="add-to-cart-btn" onClick={handleAddToCart}>
             <i className="fas fa-shopping-cart cart-btn-icon"></i>
             Ajouter au panier
           </button>
         </div>
       </div>
 
-      {/* SECTION BASSE : Les articles venant directement de WooCommerce */}
       <div className="product-bottom-block">
         <div className="details-content-row">
           <div 
             className="text-left-side wordpress-content" 
-            dangerouslySetInnerHTML={{ __html: singleProduct.description || "<p>Aucune description disponible.</p>" }} 
+            dangerouslySetInnerHTML={{ __html: productToDisplay.description || "<p>Aucune description disponible.</p>" }} 
           />
         </div>
       </div>
-
     </div>
   );
 }
