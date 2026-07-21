@@ -1,3 +1,3 @@
-export function CGU() {
-    return ("CGU");
+export default function CGU() {
+  return <></>;
 }
