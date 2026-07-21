@@ -13,6 +13,7 @@ import { filtersSlice } from "./slices/filtersSlice";
 import { userSlice } from "./slices/userSlice";
 
 import { initializeCartThunk } from "./thunkActionsCreator/cartThunks";
+import { fetchCurrentUserThunk } from "./thunkActionsCreator/userThunks";
 
 import Store from "./pages/Store";
 import Header from "./components/Header";
@@ -31,10 +32,15 @@ const store = configureStore({
 
 store.dispatch(initializeCartThunk());
 
+if (store.getState().user.token) {
+  store.dispatch(fetchCurrentUserThunk());
+}
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   // <React.StrictMode>
   <Provider store={store}>
     <Router
+      basename="/ecom/"
       future={{
         v7_startTransition: true,
         v7_relativeSplatPath: true,

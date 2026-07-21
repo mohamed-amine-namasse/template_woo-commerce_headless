@@ -30,6 +30,36 @@ export const loginThunk = createAsyncThunk(
   },
 );
 
+export const fetchCurrentUserThunk = createAsyncThunk(
+  "user/fetchCurrentUser",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().user.token;
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/wp-json/wp/v2/users/me?context=edit`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Impossible de recuperer le profil.");
+      }
+      return {
+        id: data.id,
+        username: data.username,
+        email: data.email,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        displayName: data.name,
+        roles: data.roles,
+      };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  },
+);
+
 export const registerThunk = createAsyncThunk(
   "user/register",
   async ({ username, email, password }, thunkAPI) => {

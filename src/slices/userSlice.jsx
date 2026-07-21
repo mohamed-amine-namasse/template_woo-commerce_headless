@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginThunk, registerThunk } from "../thunkActionsCreator/userThunks";
+import {
+  loginThunk,
+  registerThunk,
+  fetchCurrentUserThunk,
+} from "../thunkActionsCreator/userThunks";
 
 export const userSlice = createSlice({
   name: "user",
@@ -44,6 +48,18 @@ export const userSlice = createSlice({
         localStorage.setItem("wc_user_token", action.payload.token);
       })
       .addCase(registerThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchCurrentUserThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCurrentUserThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.profile = action.payload;
+      })
+      .addCase(fetchCurrentUserThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
