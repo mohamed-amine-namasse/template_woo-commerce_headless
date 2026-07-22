@@ -20,6 +20,7 @@ import { initializeCartThunk } from "./thunkActionsCreator/cartThunks";
 
 import Store from "./pages/Store";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import Error404 from "./pages/Error404";
 import MentionsLegales from "./pages/MentionsLegales";
 import CGU from "./pages/CGU";
@@ -52,7 +53,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     >
       <Header />
       <Routes>
-        <Route path="/" element={<Store />} />
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/catalogue" element={<Store />} />
         <Route path="/mentions-legales" element={<MentionsLegales />} />
         <Route path="/cgu" element={<CGU />} />
         <Route path="/cgv" element={<CGV />} />
@@ -61,6 +63,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="*" element={<Error404 />} />
         <Route path="/product/:id" element={<ProductDetails />} />
       </Routes>
+      <Footer />
     </Router>
   </Provider>,
   /* </React.StrictMode>, */
