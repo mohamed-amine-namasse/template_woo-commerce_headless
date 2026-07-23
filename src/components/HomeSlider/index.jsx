@@ -10,7 +10,7 @@ const CARD_WIDTH = 160;
 const GAP = 16;
 const STEP = CARD_WIDTH + GAP;
 const VIEWPORT_WIDTH = CARD_WIDTH * 3 + GAP * 2;
-const MOBILE_QUERY = "(max-width: 768px)";
+const MOBILE_QUERY = "(max-width: 1024px)";
 
 export default function HomeSlider() {
   const dispatch = useDispatch();
