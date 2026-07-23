@@ -3,12 +3,16 @@ import {
   loginThunk,
   registerThunk,
   fetchCurrentUserThunk,
+  fetchCurrentCustomerThunk,
+  fetchCurrentUserOrdersThunk,
 } from "../thunkActionsCreator/userThunks";
 
 export const userSlice = createSlice({
   name: "user",
   initialState: {
     profile: null,
+    customer: null,
+    orders: [],
     token:
       typeof window !== "undefined" ? localStorage.getItem("wc_user_token") : null,
     loading: false,
@@ -17,6 +21,8 @@ export const userSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.profile = null;
+      state.customer = null;
+      state.orders = [];
       state.token = null;
       localStorage.removeItem("wc_user_token");
     },
@@ -60,6 +66,30 @@ export const userSlice = createSlice({
         state.profile = action.payload;
       })
       .addCase(fetchCurrentUserThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchCurrentCustomerThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCurrentCustomerThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.customer = action.payload;
+      })
+      .addCase(fetchCurrentCustomerThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchCurrentUserOrdersThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCurrentUserOrdersThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orders = action.payload;
+      })
+      .addCase(fetchCurrentUserOrdersThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

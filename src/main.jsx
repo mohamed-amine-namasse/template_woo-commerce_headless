@@ -17,7 +17,11 @@ import { userSlice } from "./slices/userSlice";
 import { pagesSlice } from "./slices/pagesSlice";
 
 import { initializeCartThunk } from "./thunkActionsCreator/cartThunks";
-import { fetchCurrentUserThunk } from "./thunkActionsCreator/userThunks";
+import {
+  fetchCurrentUserThunk,
+  fetchCurrentCustomerThunk,
+  fetchCurrentUserOrdersThunk,
+} from "./thunkActionsCreator/userThunks";
 
 import Store from "./pages/Store";
 import Home from "./pages/Home";
@@ -49,6 +53,8 @@ store.dispatch(initializeCartThunk());
 
 if (store.getState().user.token) {
   store.dispatch(fetchCurrentUserThunk());
+  store.dispatch(fetchCurrentCustomerThunk());
+  store.dispatch(fetchCurrentUserOrdersThunk());
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(
