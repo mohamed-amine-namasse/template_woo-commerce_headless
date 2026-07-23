@@ -30,6 +30,12 @@ export default function HomeSlider() {
     setCurrentIndex((i) => (i - 1 + products.length) % products.length);
   };
 
+  useEffect(() => {
+    if (products.length === 0) return;
+    const interval = setInterval(goNext, 4000);
+    return () => clearInterval(interval);
+  }, [products.length]);
+
   const addProduct = (productId) => {
     dispatch(addProductToCart({ productId, quantity: 1, variation: [] }));
   };
