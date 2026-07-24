@@ -78,7 +78,9 @@ export default function Header() {
         </nav>
 
         <div className="header-actions">
+          <label htmlFor="search">Rechercher:</label>
           <input
+            id="search"
             type="search"
             className="header-search"
             placeholder="Rechercher..."
